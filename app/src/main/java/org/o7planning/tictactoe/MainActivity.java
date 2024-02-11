@@ -1,18 +1,30 @@
 package org.o7planning.tictactoe;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
     boolean gameActive = true;
 
+    MediaPlayer mPlayer;
     // Player representation
     // 0 - X
     // 1 - O
@@ -28,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             {0, 3, 6}, {1, 4, 7}, {2, 5, 8},
             {0, 4, 8}, {2, 4, 6}};
     public static int counter = 0;
+
+
 
     // this function will be called every time a
     // players tap in an empty box of the grid
@@ -67,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             if (activePlayer == 0) {
                 // set the image of x
                 img.setImageResource(R.drawable.x);
+
                 activePlayer = 1;
                 TextView status = findViewById(R.id.status);
 
@@ -139,7 +154,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //start service and play music
+        startService(new Intent(MainActivity.this, SoundService.class));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+    }
+
+    protected void onDestroy() {
+        //stop service and stop music
+        stopService(new Intent(MainActivity.this, SoundService.class));
+        super.onDestroy();
     }
 }
